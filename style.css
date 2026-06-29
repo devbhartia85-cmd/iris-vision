@@ -1,0 +1,52 @@
+body {
+  margin: 0;
+  display: flex;
+  font-family: Arial, sans-serif;
+  background: radial-gradient(circle at center, #0b1120, #000814);
+  color: white;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 320px;
+  padding: 20px;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(12px);
+  height: 100vh;
+  overflow-y: auto;
+}
+
+h1 {
+  color: cyan;
+  margin: 0;
+}
+
+.subtitle {
+  color: #aaa;
+  margin-bottom: 30px;
+}
+
+.control {
+  margin-bottom: 20px;
+}
+
+select, input {
+  width: 100%;
+  padding: 8px;
+  background: #111;
+  color: white;
+  border: 1px solid cyan;
+}
+
+.panel ul {
+  list-style: none;
+  padding: 0;
+}
+
+.panel li {
+  padding: 6px 0;
+}
+
+#scene {
+  flex: 1;
+}
