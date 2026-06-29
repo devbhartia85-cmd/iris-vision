@@ -1,40 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>IRIS Vision - Satellite Thermal Control</title>
+<title>IRIS Vision</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="style.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
-<body>
+<body class="landing">
 
-<div class="sidebar">
+<div class="landing-container">
   <h1>IRIS Vision</h1>
-  <p class="subtitle">Satellite Thermal Intelligence</p>
-
-  <div class="control">
-    <label>Thermal Mode</label>
-    <select id="mode">
-      <option value="heat">Infrared Heat Map</option>
-      <option value="spectrum">Spectrum Mode</option>
-      <option value="risk">Risk View</option>
-    </select>
-  </div>
-
-  <div class="control">
-    <label>Sensor Intensity</label>
-    <input type="range" id="intensity" min="1" max="5" value="2">
-  </div>
-
-  <div class="panel">
-    <h3>Component Temperatures</h3>
-    <ul id="tempList"></ul>
-  </div>
+  <p>Infrared Analytics for Satellite & Earth Intelligence</p>
+  <button onclick="launch()">Launch Analysis</button>
 </div>
 
-<div id="scene"></div>
+<script>
+function launch() {
+  window.location.href = "dashboard.html";
+}
+</script>
 
-<script src="script.js"></script>
 </body>
 </html>
