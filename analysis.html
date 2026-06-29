@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Satellite Analysis - IRIS Vision</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">IR</div>
+      <h2>IRIS Vision</h2>
+    </div>
+    <nav>
+      <div class="nav-section">
+        <label>Main</label>
+        <a href="dashboard.html" class="nav-item">Dashboard</a>
+        <a href="upload.html" class="nav-item">Upload Data</a>
+        <a href="analysis.html" class="nav-item active">Satellite Analysis</a>
+        <a href="earth.html" class="nav-item">Earth Topography</a>
+      </div>
+      <div class="nav-section">
+        <label>System</label>
+        <a href="history.html" class="nav-item">History</a>
+        <a href="settings.html" class="nav-item">Settings</a>
+      </div>
+    </nav>
+  </aside>
+  
+  <main class="main-content">
+    <div class="page-header">
+      <h1>Satellite Thermal Analysis</h1>
+      <p>3D component visualization with real-time temperature monitoring.</p>
+    </div>
+    
+    <div class="glass-card" style="padding:0;overflow:hidden;">
+      <div id="satelliteCanvas" style="width:100%;height:70vh;background:#000;"></div>
+      <div style="padding:1.5rem;display:flex;gap:2rem;flex-wrap:wrap;">
+        <div>
+          <label style="color:var(--muted);font-size:0.875rem;">Thermal Mode</label>
+          <select id="mode" style="margin-top:0.5rem;width:200px;">
+            <option value="heat">Infrared Heat Map</option>
+            <option value="spectrum">Spectrum</option>
+            <option value="risk">Risk Assessment</option>
+          </select>
+        </div>
+        <div>
+          <label style="color:var(--muted);font-size:0.875rem;">Sensor Intensity</label>
+          <input type="range" id="intensity" min="1" max="5" value="2" style="margin-top:0.5rem;width:200px;display:block;">
+        </div>
+      </div>
+    </div>
+    
+    <div class="glass-card" style="margin-top:1.5rem;">
+      <h3 style="margin-bottom:1rem;">Component Temperatures</h3>
+      <div id="componentList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x000000);
+
+const container = document.getElementById('satelliteCanvas');
+const camera = new THREE.PerspectiveCamera(75, container.clientWidth/container.clientHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(container.clientWidth, container.clientHeight);
+container.appendChild(renderer.domElement);
+
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+camera.position.set(0, 2, 8);
+
+// Stars
+const starsGeo = new THREE.BufferGeometry();
+const starPos = [];
+for(let i=0;i<2000;i++){
+  starPos.push((Math.random()-0.5)*200);
+  starPos.push((Math.random()-0.5)*200);
+  starPos.push((Math.random()-0.5)*200);
+}
+starsGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos,3));
+scene.add(new THREE.Points(starsGeo, new THREE.PointsMaterial({color:0xffffff})));
+
+// Satellite
+const sat = new THREE.Group();
+scene.add(sat);
+
+const body = new THREE.Mesh(new THREE.BoxGeometry(2,2,2), new THREE.MeshStandardMaterial({color:0x00ffff}));
+sat.add(body);
+
+const panelGeo = new THREE.BoxGeometry(4,0.2,1.5);
+const panelMat = new THREE.MeshStandardMaterial({color:0x00aaff});
+const pLeft = new THREE.Mesh(panelGeo, panelMat);
+pLeft.position.x = -3;
+sat.add(pLeft);
+const pRight = new THREE.Mesh(panelGeo, panelMat);
+pRight.position.x = 3;
+sat.add(pRight);
+
+const ant = new THREE.Mesh(new THREE.ConeGeometry(0.7,1.5,32), new THREE.MeshStandardMaterial({color:0xffffff}));
+ant.position.y = 2;
+sat.add(ant);
+
+const components = [
+  {name:'Main Bus', mesh:body, temp:55},
+  {name:'Solar Panel Left', mesh:pLeft, temp:45},
+  {name:'Solar Panel Right', mesh:pRight, temp:50},
+  {name:'Antenna', mesh:ant, temp:40}
+];
+
+function getColor(temp){
+  const mode = document.getElementById('mode').value;
+  if(mode==='heat'){
+    return temp>80?0xff0000:temp>65?0xffa500:temp>50?0xffff00:0x00ffff;
+  }
+  if(mode==='spectrum'){
+    return temp>80?0xffffff:temp>65?0xff0000:temp>50?0x00ff00:0x0000ff;
+  }
+  return temp>75?0xff0000:0x00ff00;
+}
+
+function updateTemps(){
+  const intensity = document.getElementById('intensity').value;
+  const list = document.getElementById('componentList');
+  list.innerHTML = '';
+  
+  components.forEach(comp=>{
+    comp.temp += (Math.random()-0.5)*4*intensity;
+    comp.mesh.material.color.setHex(getColor(comp.temp));
+    comp.mesh.material.emissive = comp.temp>80?new THREE.Color(0xff0000):new THREE.Color(0x000000);
+    
+    const card = document.createElement('div');
+    card.style.cssText = 'background:rgba(255,255,255,0.05);padding:1rem;border-radius:12px;border:1px solid var(--border);';
+    card.innerHTML = `<div style="font-size:0.875rem;color:var(--muted);">${comp.name}</div><div style="font-size:1.5rem;font-weight:700;color:${comp.temp>80?'var(--danger)':'var(--primary)'};">${comp.temp.toFixed(1)}°C</div>`;
+    list.appendChild(card);
+  });
+}
+
+setInterval(updateTemps, 3000);
+updateTemps();
+
+function animate(){
+  requestAnimationFrame(animate);
+  sat.rotation.y += 0.003;
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+
+window.addEventListener('resize', ()=>{
+  camera.aspect = container.clientWidth/container.clientHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(container.clientWidth, container.clientHeight);
+});
+</script>
+<script src="app.js"></script>
+</body>
+</html>

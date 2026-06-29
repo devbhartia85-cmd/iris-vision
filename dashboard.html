@@ -1,28 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Dashboard - IRIS Vision</title>
 <link rel="stylesheet" href="style.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
-
-<div class="sidebar">
-  <h2>IRIS Vision</h2>
-  <a href="dashboard.html">Dashboard</a>
-  <a href="upload.html">Upload</a>
-  <a href="history.html">History</a>
-  <a href="settings.html">Settings</a>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">IR</div>
+      <h2>IRIS Vision</h2>
+    </div>
+    <nav>
+      <div class="nav-section">
+        <label>Main</label>
+        <a href="dashboard.html" class="nav-item active">Dashboard</a>
+        <a href="upload.html" class="nav-item">Upload Data</a>
+        <a href="analysis.html" class="nav-item">Satellite Analysis</a>
+        <a href="earth.html" class="nav-item">Earth Topography</a>
+      </div>
+      <div class="nav-section">
+        <label>System</label>
+        <a href="history.html" class="nav-item">History</a>
+        <a href="settings.html" class="nav-item">Settings</a>
+      </div>
+    </nav>
+  </aside>
+  
+  <main class="main-content">
+    <div class="page-header">
+      <h1>Mission Dashboard</h1>
+      <p>Real-time satellite thermal monitoring and IR analytics overview.</p>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="glass-card">
+        <div class="stat-label">Total Analyses</div>
+        <div class="stat-value" id="statTotal">0</div>
+      </div>
+      <div class="glass-card">
+        <div class="stat-label">Avg PSNR</div>
+        <div class="stat-value" id="statPsnr">--</div>
+      </div>
+      <div class="glass-card">
+        <div class="stat-label">Avg SSIM</div>
+        <div class="stat-value" id="statSsim">--</div>
+      </div>
+      <div class="glass-card">
+        <div class="stat-label">Processing</div>
+        <div class="stat-value" id="statPending">0</div>
+      </div>
+    </div>
+    
+    <div class="glass-card">
+      <h3 style="margin-bottom:1rem;">Recent Activity</h3>
+      <p style="color:var(--muted)">Upload infrared satellite data to begin thermal analysis. Results will appear here.</p>
+    </div>
+  </main>
 </div>
-
-<div class="main">
-  <h1>Satellite Thermal Overview</h1>
-  <div id="scene"></div>
-</div>
-
-<script src="script.js"></script>
-
+<script src="app.js"></script>
 </body>
 </html>

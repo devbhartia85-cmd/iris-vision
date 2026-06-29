@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Earth Topography - IRIS Vision</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">IR</div>
+      <h2>IRIS Vision</h2>
+    </div>
+    <nav>
+      <div class="nav-section">
+        <label>Main</label>
+        <a href="dashboard.html" class="nav-item">Dashboard</a>
+        <a href="upload.html" class="nav-item">Upload Data</a>
+        <a href="analysis.html" class="nav-item">Satellite Analysis</a>
+        <a href="earth.html" class="nav-item active">Earth Topography</a>
+      </div>
+      <div class="nav-section">
+        <label>System</label>
+        <a href="history.html" class="nav-item">History</a>
+        <a href="settings.html" class="nav-item">Settings</a>
+      </div>
+    </nav>
+  </aside>
+  
+  <main class="main-content">
+    <div class="page-header">
+      <h1>Earth Topographic IR View</h1>
+      <p>Infrared terrain analysis for surface temperature and human activity detection.</p>
+    </div>
+    
+    <div class="glass-card" style="padding:0;overflow:hidden;">
+      <div id="earthCanvas" style="width:100%;height:70vh;background:#000;"></div>
+      <div style="padding:1.5rem;">
+        <p style="color:var(--muted);">Terrain elevation mapped to infrared thermal signatures. Higher elevations show cooler temperatures (blue), urban zones show heat signatures (orange/red).</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x000000);
+
+const container = document.getElementById('earthCanvas');
+const camera = new THREE.PerspectiveCamera(75, container.clientWidth/container.clientHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(container.clientWidth, container.clientHeight);
+container.appendChild(renderer.domElement);
+
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+camera.position.set(0, 5, 10);
+
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(0, 10, 5);
+scene.add(light);
+
+// Terrain
+const geo = new THREE.PlaneGeometry(20, 20, 100, 100);
+geo.rotateX(-Math.PI/2);
+
+const colors = [];
+const pos = geo.attributes.position;
+
+for(let i=0; i<pos.count; i++){
+  const x = pos.getX(i);
+  const z = pos.getZ(i);
+  const y = Math.sin(x*0.5)*Math.cos(z*0.5)*1.5 + Math.random()*0.3;
+  pos.setY(i, y);
+  
+  // Thermal coloring
+  const t = (y + 2) / 4;
+  const color = new THREE.Color();
+  if(t > 0.7) color.setHex(0xff4400); // hot urban
+  else if(t > 0.4) color.setHex(0xffaa00); // warm
+  else if(t > 0.2) color.setHex(0x00ffaa); // cool vegetation
+  else color.setHex(0x0088ff); // cold water/ice
+  
+  colors.push(color.r, color.g, color.b);
+}
+
+geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+const mat = new THREE.MeshStandardMaterial({ 
+  vertexColors: true, 
+  wireframe: false,
+  roughness: 0.8 
+});
+
+const terrain = new THREE.Mesh(geo, mat);
+scene.add(terrain);
+
+// Wireframe overlay
+const wireMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, wireframe: true, transparent: true, opacity: 0.1 });
+const wire = new THREE.Mesh(geo, wireMat);
+scene.add(wire);
+
+function animate(){
+  requestAnimationFrame(animate);
+  terrain.rotation.y += 0.001;
+  wire.rotation.y += 0.001;
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+
+window.addEventListener('resize', ()=>{
+  camera.aspect = container.clientWidth/container.clientHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(container.clientWidth, container.clientHeight);
+});
+</script>
+<script src="app.js"></script>
+</body>
+</html>

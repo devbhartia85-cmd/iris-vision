@@ -1,24 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Upload - IRIS Vision</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<div class="sidebar">
-  <h2>IRIS Vision</h2>
-  <a href="dashboard.html">Dashboard</a>
-  <a href="upload.html">Upload</a>
-  <a href="history.html">History</a>
-  <a href="settings.html">Settings</a>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">IR</div>
+      <h2>IRIS Vision</h2>
+    </div>
+    <nav>
+      <div class="nav-section">
+        <label>Main</label>
+        <a href="dashboard.html" class="nav-item">Dashboard</a>
+        <a href="upload.html" class="nav-item active">Upload Data</a>
+        <a href="analysis.html" class="nav-item">Satellite Analysis</a>
+        <a href="earth.html" class="nav-item">Earth Topography</a>
+      </div>
+      <div class="nav-section">
+        <label>System</label>
+        <a href="history.html" class="nav-item">History</a>
+        <a href="settings.html" class="nav-item">Settings</a>
+      </div>
+    </nav>
+  </aside>
+  
+  <main class="main-content">
+    <div class="page-header">
+      <h1>Upload Infrared Data</h1>
+      <p>Upload satellite thermal imagery for colorization and component analysis.</p>
+    </div>
+    
+    <div class="upload-zone" id="uploadZone">
+      <div style="font-size:3rem;color:var(--primary);margin-bottom:1rem;">📡</div>
+      <h3>Drop IR Image Here</h3>
+      <p style="color:var(--muted);margin-top:0.5rem;">Supports .tif, .tiff, .png, .jpg</p>
+      <input type="file" id="fileInput" accept=".tif,.tiff,.png,.jpg,.jpeg" hidden>
+    </div>
+  </main>
 </div>
-
-<div class="main">
-  <h1>Upload Infrared Data</h1>
-  <input type="file">
-</div>
-
+<script src="app.js"></script>
 </body>
 </html>

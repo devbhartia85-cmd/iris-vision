@@ -1,24 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>History - IRIS Vision</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<div class="sidebar">
-  <h2>IRIS Vision</h2>
-  <a href="dashboard.html">Dashboard</a>
-  <a href="upload.html">Upload</a>
-  <a href="history.html">History</a>
-  <a href="settings.html">Settings</a>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">IR</div>
+      <h2>IRIS Vision</h2>
+    </div>
+    <nav>
+      <div class="nav-section">
+        <label>Main</label>
+        <a href="dashboard.html" class="nav-item">Dashboard</a>
+        <a href="upload.html" class="nav-item">Upload Data</a>
+        <a href="analysis.html" class="nav-item">Satellite Analysis</a>
+        <a href="earth.html" class="nav-item">Earth Topography</a>
+      </div>
+      <div class="nav-section">
+        <label>System</label>
+        <a href="history.html" class="nav-item active">History</a>
+        <a href="settings.html" class="nav-item">Settings</a>
+      </div>
+    </nav>
+  </aside>
+  
+  <main class="main-content">
+    <div class="page-header">
+      <h1>Mission History</h1>
+      <p>All satellite thermal analyses and processing records.</p>
+    </div>
+    
+    <div class="glass-card" style="overflow-x:auto;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>File Name</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>PSNR</th>
+            <th>SSIM</th>
+            <th>Temp</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody"></tbody>
+      </table>
+    </div>
+  </main>
 </div>
-
-<div class="main">
-  <h1>Analysis History</h1>
-  <p>No past missions yet.</p>
-</div>
-
+<script src="app.js"></script>
 </body>
 </html>
